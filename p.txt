@@ -8,7 +8,7 @@ error_reporting(E_ERROR | E_PARSE);
 @ini_set('max_execution_time',0);
 @ini_set('memory_limit','128M');
 @ini_set('upload_max_filesize','40M');
-define('VERSION','0.2.30');
+define('VERSION','0.2.40');
 define('F_ROOT',str_replace('\\','/',(($cwd = getcwd()) ? $cwd : ($_SERVER['SCRIPT_FILENAME'] ? dirname($_SERVER['SCRIPT_FILENAME']) : '.'))).'/');
 define('S_ROOT',str_replace('\\','/',$_SERVER['DOCUMENT_ROOT']));
 define('IS_WIN',DIRECTORY_SEPARATOR=='\\');
